@@ -61,27 +61,20 @@ SELECT COUNT (year_build) AS anzahl_immobilien2020 FROM House WHERE House.year_b
 
 
 -- Frage 3:
-select * from County inner join City C on C.id = County.city_id;
-
-select year_build, county_name, city_id, county_id from House
-inner join County C on C.id = House.county_id;
-
-select county_name, city_name from House
-    inner join County C on C.id = House.county_id
-    inner join City C2 on C2.id = C.city_id;
-
-select city_name, county_name from City inner join County C on C.id = City.county_id order by city_name;
-
+SELECT city_name, count as imos_in_num_county
+    FROM (SELECT *, count(*) AS count FROM County_to_City GROUP BY city_id)
+    INNER JOIN City ON city_id = City.id
+    WHERE count > 1
+    ORDER BY count DESC;
 
 
 -- Frage 4:
 SELECT city, ROUND (AVG(price),2) as RealEstate_price
-
 FROM RealEstate_California
-
 GROUP BY city
+ORDER BY RealEstate_price DESC;
 
-ORDER BY RealEstate_price DESC
+
 
 
 
