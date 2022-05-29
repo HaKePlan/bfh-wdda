@@ -8,14 +8,14 @@ DROP TABLE IF EXISTS `Status`;
 DROP TABLE IF EXISTS `Sale_Announcement`;
 DROP TABLE IF EXISTS `Unit`;
 DROP TABLE IF EXISTS `Building_Area`;
-DROP TABLE IF EXISTS `Street`;
 DROP TABLE IF EXISTS `Home_Type`;
+DROP TABLE IF EXISTS `County_to_City`;
 PRAGMA FOREIGN_KEY_CHECKS = OFF;
 
 CREATE TABLE `House` (
     `id` INTEGER NOT NULL,
-    `street_id` INTEGER NOT NULL,
-    `county_id` INTEGER NOT NULL,
+    `street_name` VARCHAR(50) NOT NULL,
+    `county_to_city_id` INTEGER NOT NULL,
     `longitude` FLOAT NOT NULL,
     `latitude` FLOAT NOT NULL,
     `year_build` INTEGER,
@@ -31,8 +31,7 @@ CREATE TABLE `House` (
     `building_area_id` INTEGER NOT NULL,
     `zip_code` INTEGER,
     PRIMARY KEY (`id` AUTOINCREMENT),
-    FOREIGN KEY (`street_id`) references `Street` (`id`),
-    FOREIGN KEY (`county_id`) references `County` (`id`),
+    FOREIGN KEY (`county_to_city_id`) references `County_to_City` (`id`),
     FOREIGN KEY (`building_area_id`) references `Building_Area` (`id`)
 );
 
@@ -56,9 +55,9 @@ CREATE TABLE `State` (
 CREATE TABLE `County` (
     `id` INTEGER NOT NULL,
     `county_name` VARCHAR(20) NOT NULL,
-    `city_id` INTEGER NOT NULL,
+    `state_id` INTEGER NOT NULL,
     PRIMARY KEY (`id` AUTOINCREMENT),
-    FOREIGN KEY (`city_id`) references `City` (`id`)
+    FOREIGN KEY (`state_id`) references `State` (`id`)
 );
 
 CREATE TABLE `City` (
@@ -113,17 +112,16 @@ CREATE TABLE `Building_Area` (
     FOREIGN KEY (`unit_id`) references `Unit` (`id`)
 );
 
-CREATE TABLE `Street` (
-    `id` INTEGER NOT NULL,
-    `name` VARCHAR(50) NOT NULL,
-    `county_id` VARCHAR(10) NOT NULL,
-    PRIMARY KEY (`id` AUTOINCREMENT),
-    FOREIGN KEY (`county_id`) references `County` (`id`)
-);
-
 CREATE TABLE `Home_Type` (
     `id` INTEGER NOT NULL,
     `home_type_name` VARCHAR(20) NOT NULL,
     PRIMARY KEY (`id` AUTOINCREMENT),
     UNIQUE (`home_type_name`)
+);
+
+CREATE TABLE `County_to_City` (
+    `id` INTEGER NOT NULL,
+    `city_id` INTEGER NOT NULL,
+    `county_id` INTEGER NOT NULL,
+    PRIMARY KEY (`id` AUTOINCREMENT)
 );

@@ -32,6 +32,26 @@ class Unit:
         self.name = name
 
 
+class CountyToCity:
+    def __init__(self, county_name: str, city_name: str):
+        self.county_name = county_name
+        self.city_name = city_name
+
+    def get_county_id(self, con: sqlite3.Connection):
+        cursor = con.cursor()
+        _id = ''
+        for row in cursor.execute(f"""select id from County where county_name = '{self.county_name}'"""):
+            _id = row[0]
+        return int(_id)
+
+    def get_city_id(self, con: sqlite3.Connection):
+        cursor = con.cursor()
+        _id = ''
+        for row in cursor.execute(f"""select id from City where city_name = '{self.city_name}'"""):
+            _id = row[0]
+        return int(_id)
+
+
 class State(TableMethods):
     def __init__(self, state_name: str, country_name: str) -> None:
         parent_table = 'Country'
@@ -47,17 +67,10 @@ class City(TableMethods):
 
 
 class County(TableMethods):
-    def __init__(self, county_name: str, city_name: str) -> None:
-        parent_table = 'City'
-        table_field = 'city_name'
-        super().__init__(county_name, city_name, parent_table, table_field)
-
-
-class Street(TableMethods):
-    def __init__(self, street_name: str, county_name: str) -> None:
-        parent_table = 'County'
-        table_field = 'county_name'
-        super().__init__(street_name, county_name, parent_table, table_field)
+    def __init__(self, county_name: str, state_name: str) -> None:
+        parent_table = 'State'
+        table_field = 'state_name'
+        super().__init__(county_name, state_name, parent_table, table_field)
 
 
 class BuildingArea(TableMethods):
@@ -88,19 +101,21 @@ class House:
             zip_code: int,
             street_name: str,
             county_name: str,
+            city_name: str,
             building_area_int: int,
             living_area: int,
             living_area_value: int,
             unit_name: str,
     ):
-        self.parent_street_name = street_name
         self.parent_county_name = county_name
+        self.parent_city_name = city_name
 
         self.building_area_int = building_area_int
         self.living_area_value = living_area_value
         self.living_area = living_area
         self.unit_name = unit_name
 
+        self.street_name = street_name
         self.longitude = float(longitude)
         self.latitude = float(latitude)
         self.year_build = year_build
@@ -115,18 +130,16 @@ class House:
         self.spa = spa
         self.zip_code = zip_code if zip_code else 'null'
 
-    def get_street_id(self, con: sqlite3.Connection):
+    def get_county_to_city_id(self, con: sqlite3.Connection):
         cursor = con.cursor()
         _id = ''
-        for row in cursor.execute(f"""select id from Street where name = '{self.parent_street_name}'"""):
-            _id = row[0]
-
-        return int(_id)
-
-    def get_county_id(self, con: sqlite3.Connection):
-        cursor = con.cursor()
-        _id = ''
-        for row in cursor.execute(f"""select id from County where county_name = '{self.parent_county_name}'"""):
+        for row in cursor.execute(f"""
+        select County_to_City.id 
+            from County_to_City 
+            inner join City C on County_to_City.city_id = C.id
+            inner join County C2 on County_to_City.county_id = C2.id
+            where city_name = '{self.parent_city_name}' and county_name = '{self.parent_county_name}'
+            """):
             _id = row[0]
 
         return int(_id)
@@ -215,7 +228,7 @@ def delete_data(con):
     cursor = con.cursor()
 
     tables = ['House', 'Country', 'State', 'City', 'County', 'Status', 'Sale_Announcement', 'Unit', 'Building_Area',
-              'Street', 'Home_Type']
+              'County_to_City', 'Home_Type']
 
     for table in tables:
         cursor.execute(f"""delete from {table}""")
@@ -228,7 +241,7 @@ def read_data(
         state_list: List,
         county_list: List,
         city_list: List,
-        street_list: List,
+        county_to_city_list: List,
         unit_list: List,
         building_area_list: List,
         house_list: List,
@@ -247,11 +260,11 @@ def read_data(
     for row in cursor.execute("""select distinct city, state from import_data"""):
         city_list.append(City(row[0], row[1]))
 
-    for row in cursor.execute("""select distinct county, city from import_data"""):
+    for row in cursor.execute("""select distinct county, state from import_data"""):
         county_list.append(County(row[0], row[1]))
 
-    for row in cursor.execute("""select distinct streetAddress, county from import_data"""):
-        street_list.append(Street(row[0], row[1]))
+    for row in cursor.execute("""select distinct county, city from import_data"""):
+        county_to_city_list.append(CountyToCity(row[0], row[1]))
 
     for row in cursor.execute("""select distinct lotAreaUnits from import_data"""):
         unit_list.append(Unit(row[0]))
@@ -277,13 +290,14 @@ def read_data(
                 zipcode, 
                 streetAddress, 
                 county,
+                city,
                 buildingArea, 
                 livingArea, 
                 livingAreaValue, 
                 lotAreaUnits 
                 from import_data"""):
         house_list.append(House(row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10],
-                                row[11], row[12], row[13], row[14], row[15], row[16], row[17], row[18]))
+                                row[11], row[12], row[13], row[14], row[15], row[16], row[17], row[18], row[19]))
 
     for row in cursor.execute("""select distinct event from import_data"""):
         status_list.append(Status(row[0]))
@@ -318,7 +332,7 @@ def import_data(
         state_list: List[State],
         county_list: List[County],
         city_list: List[City],
-        street_list: List[Street],
+        county_to_city_list: List[CountyToCity],
         unit_list: List[Unit],
         building_area_list: List[BuildingArea],
         house_list: List[House],
@@ -348,8 +362,8 @@ def import_data(
 
     con.commit()
 
-    for entry in street_list:
-        cursor.execute(f"""insert into Street values (null, '{entry.child_name}', {entry.get_parent_id(con)})""")
+    for entry in county_to_city_list:
+        cursor.execute(f"""insert into County_to_City values (null, '{entry.get_city_id(con)}', '{entry.get_county_id(con)}')""")
 
     con.commit()
 
@@ -364,7 +378,7 @@ def import_data(
     con.commit()
 
     for entry in house_list:
-        cursor.execute(f"""insert into House values (null, {entry.get_street_id(con)}, {entry.get_county_id(con)}, 
+        cursor.execute(f"""insert into House values (null, '{entry.street_name}', {entry.get_county_to_city_id(con)}, 
         {entry.longitude}, {entry.latitude}, {entry.year_build}, {entry.bathroom}, {entry.has_bad_geocode}, 
         {entry.bedroom}, {entry.parking}, {entry.garage_space}, {entry.has_garage}, '{entry.levels}', {entry.pool}, 
         {entry.spa}, {entry.get_building_area_id(con)}, {entry.zip_code})""")
@@ -396,7 +410,7 @@ if __name__ == '__main__':
     states = []
     counties = []
     cities = []
-    streets = []
+    counties_to_cities = []
     units = []
     building_area = []
     houses = []
@@ -405,7 +419,7 @@ if __name__ == '__main__':
     sale_announcements = []
 
     delete_data(connection)
-    read_data(connection, countries, states, counties, cities, streets, units, building_area, houses, status, home_types, sale_announcements)
-    import_data(connection, countries, states, counties, cities, streets, units, building_area, houses, status, home_types, sale_announcements)
+    read_data(connection, countries, states, counties, cities, counties_to_cities, units, building_area, houses, status, home_types, sale_announcements)
+    import_data(connection, countries, states, counties, cities, counties_to_cities, units, building_area, houses, status, home_types, sale_announcements)
 
     connection.close()

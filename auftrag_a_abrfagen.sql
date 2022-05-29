@@ -1,6 +1,8 @@
 -- WDDA – Semesterarbeit: Teil a
 -- Frage 1:
 -- A)
+drop view view_California_real_estate;
+
 CREATE VIEW "view_California_real_estate" AS
 select Sale_Announcement.export_number as id,
        C3.country_name as country,
@@ -11,9 +13,9 @@ select Sale_Announcement.export_number as id,
        Sale_Announcement.price as price,
        Sale_Announcement.price_per_square as pricePerSquareFoot,
        C2.city_name as city,
-       S3.state_name as state,
+       S2.state_name as state,
        H.year_build as yearBuilt,
-       S2.name as streetAddress,
+       H.street_name as streetAddress,
        H.zip_code as zipcode,
        H.longitude as longitude,
        H.latitude as latitude,
@@ -42,13 +44,11 @@ select Sale_Announcement.export_number as id,
     inner join House H on H.id = Sale_Announcement.house_id
     inner join Building_Area BA on BA.id = H.building_area_id
     inner join Unit U on BA.unit_id = U.id
-    inner join Street S2 on S2.id = H.street_id
-    inner join County C on C.id = H.county_id
-    inner join City C2 on C2.id = C.city_id
-    inner join State S3 on S3.id = C2.state_id
-    inner join Country C3 on C3.id = S3.country_id;
-
-drop view view_California_real_estate;
+    inner join County_to_City CtC on CtC.id = H.county_to_city_id
+    inner join County C on CtC.county_id = C.id
+    inner join City C2 on CtC.city_id = C2.id
+    inner join State S2 on C.state_id = S2.id
+    inner join Country C3 on C3.id = S2.country_id;
 
 -- B)
 SELECT COUNT(*) AS anzahl FROM "view_California_real_estate";
@@ -61,7 +61,14 @@ SELECT COUNT (year_build) AS anzahl_immobilien2020 FROM House WHERE House.year_b
 
 
 -- Frage 3:
-select distinct county, city from import_data order by city;
+select * from County inner join City C on C.id = County.city_id;
+
+select year_build, county_name, city_id, county_id from House
+inner join County C on C.id = House.county_id;
+
+select county_name, city_name from House
+    inner join County C on C.id = House.county_id
+    inner join City C2 on C2.id = C.city_id;
 
 select city_name, county_name from City inner join County C on C.id = City.county_id order by city_name;
 
