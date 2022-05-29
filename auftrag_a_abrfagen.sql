@@ -56,6 +56,7 @@ SELECT COUNT(*) AS anzahl FROM "view_California_real_estate";
 -- C)
 SELECT DISTINCT * FROM "view_California_real_estate" WHERE city = 'Bell Gardens';
 
+
 -- Frage 2:
 SELECT COUNT (year_build) AS anzahl_immobilien2020 FROM House WHERE House.year_build > 2020;
 
@@ -69,27 +70,19 @@ SELECT city_name, count as imos_in_num_county
 
 
 -- Frage 4:
-SELECT city, ROUND (AVG(price),2) as RealEstate_price
-FROM RealEstate_California
-GROUP BY city
-ORDER BY RealEstate_price DESC;
-
-
-
+select round(avg(price), 2) as avg_price, city
+    from view_California_real_estate
+    group by city
+    order by avg_price desc;
 
 
 -- Frage 5:
 
-SELECT city, ROUND (AVG(pricePerSquareFoot),2) as Average_per_SquareFoot
-
-FROM RealEstate_California
-
-GROUP BY city
-
-ORDER BY Average_per_SquareFoot DESC
-
+SELECT city, ROUND(AVG(pricePerSquareFoot), 2) as Average_per_SquareFoot
+    FROM view_California_real_estate
+    GROUP BY city
+    ORDER BY Average_per_SquareFoot DESC;
 
 
 -- Frage 6:
-
-SELECT homeType, price, description FROM RealEstate_California WHERE city = “Parlier”
+SELECT homeType, price, description FROM view_California_real_estate WHERE city = 'Parlier'
