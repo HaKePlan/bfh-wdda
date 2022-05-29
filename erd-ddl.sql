@@ -123,5 +123,7 @@ CREATE TABLE `County_to_City` (
     `id` INTEGER NOT NULL,
     `city_id` INTEGER NOT NULL,
     `county_id` INTEGER NOT NULL,
-    PRIMARY KEY (`id` AUTOINCREMENT)
+    PRIMARY KEY (`id` AUTOINCREMENT),
+    FOREIGN KEY (`city_id`) references `City` (`id`),
+    FOREIGN KEY (`county_id`) references `County` (`id`)
 );
