@@ -19,7 +19,6 @@ CREATE TABLE `House` (
     `longitude` FLOAT NOT NULL,
     `latitude` FLOAT NOT NULL,
     `year_build` INTEGER,
-    `statusID` INTEGER NOT NULL,
     `bathroom` INTEGER NOT NULL,
     `has_bad_geocode` BOOLEAN NOT NULL,
     `bedroom` INTEGER NOT NULL,
