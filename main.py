@@ -381,10 +381,9 @@ def import_data(
 
     con.commit()
 
-    # TODO: check date posted (only year is saved)
     for entry in sale_announcement_list:
         cursor.execute(f"""insert into Sale_Announcement values (null, {entry.get_house_id(con)}, {entry.get_status_id(con)}, 
-        {entry.date_posted}, {entry.price}, {entry.is_for_auction}, {entry.price_per_square}, '{entry.description}', 
+        '{entry.date_posted}', {entry.price}, {entry.is_for_auction}, {entry.price_per_square}, '{entry.description}', 
         {entry.bank_owned}, {entry.new_build}, {entry.pets}, {entry.get_home_type_id(con)}, '{entry.announcement_id}')""")
 
     con.commit()
