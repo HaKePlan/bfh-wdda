@@ -404,6 +404,12 @@ def import_data(
 
 
 if __name__ == '__main__':
+
+    sure = input('are you sure to execute this script? [yes/No]: ')
+    if not sure == 'yes':
+        print('aborting script')
+        exit(0)
+
     connection = sqlite3.connect('./project_data.sqlite')
 
     countries = []
