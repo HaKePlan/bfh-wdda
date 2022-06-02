@@ -77,7 +77,6 @@ select round(avg(price), 2) as avg_price, city
 
 
 -- Frage 5:
-
 SELECT city, ROUND(AVG(pricePerSquareFoot), 2) as Average_per_SquareFoot
     FROM view_California_real_estate
     GROUP BY city
