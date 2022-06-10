@@ -80,8 +80,8 @@ if __name__ == '__main__':
 
     # generate possible arguments for this script
     parser = argparse.ArgumentParser('Extract announcements by arguments')
-    parser.add_argument('-c', action='store', type=str)
-    parser.add_argument('-y', action='store', type=int)
+    parser.add_argument('-c', action='store', type=str, help='name of a city')
+    parser.add_argument('-y', action='store', type=int, help='year to filter; shows all which are newer than year')
 
     # parse given arguments by calling this script
     args = parser.parse_args()
