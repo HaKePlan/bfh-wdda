@@ -24,9 +24,9 @@ def build_after_year():
     except ValueError:
         return {"message": "please provide a valid year as a number"}, 400
 
-    number_of_announcements = get_announcement_by_year_build(get_db_connection(), year)[0][0]
-
-    print(number_of_announcements)
+    conn = get_db_connection()
+    number_of_announcements = get_announcement_by_year_build(conn, year)[0][0]
+    conn.close()
 
     return render_template("by_year.html", year=year, count=number_of_announcements)
 
@@ -38,7 +38,9 @@ def filter_by_city_name():
     except ValueError:
         return {"message": "please provide a valid city name as string"}, 400
 
-    announcement_by_city = get_announcement_by_city_name(get_db_connection(), city)
+    conn = get_db_connection()
+    announcement_by_city = get_announcement_by_city_name(conn, city)
+    conn.close()
 
     return render_template("by_city.html", name=city, rows=announcement_by_city)
 
