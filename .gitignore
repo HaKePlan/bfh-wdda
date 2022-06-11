@@ -2,3 +2,4 @@
 venv/
 *.sqlite
 .Rhistory
+*__pycache__/

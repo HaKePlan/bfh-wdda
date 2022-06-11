@@ -410,7 +410,7 @@ if __name__ == '__main__':
         print('aborting script')
         exit(0)
 
-    connection = sqlite3.connect('./project_data.sqlite')
+    connection = sqlite3.connect('../project_data.sqlite')
 
     countries = []
     states = []

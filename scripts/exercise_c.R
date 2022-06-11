@@ -5,6 +5,7 @@
 # New Variable: Anzahl registrierte Wähler
 
 library('DBI')
+# TODO: change path to relative from script
 con <- dbConnect(RSQLite::SQLite(), "~/Library/CloudStorage/OneDrive-BernerFachhochschule/wdda_gruppenarbeit/python_scripts/project_data.sqlite")
 
 dbListTables(con)

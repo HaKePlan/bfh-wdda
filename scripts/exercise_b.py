@@ -87,7 +87,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     # create connection to our sql database
-    connection = sqlite3.connect('./project_data.sqlite')
+    connection = sqlite3.connect('../project_data.sqlite')
 
     # execute function based on the given arguments
     if args.c:

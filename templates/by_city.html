@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div>
+  <h2>announcements for city '{{ name }}'</h2>
+</div>
+<hr>
+<ul>
+    {% for el in rows %}
+        <li>
+            <a>Home type: {{el[0]}};</a>
+            <a>Price: {{el[1]}}</a>
+            <div>{{el[2]}}</div>
+            <hr>
+        </li>
+    {% endfor %}
+</ul>
+<a href="{{ url_for('home')}}">home</a>
+</body>
+</html>
