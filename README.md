@@ -28,6 +28,8 @@ Create a new sqlite database named `project_data.sqlite` in the project root
 $ touch project_data.sqlite
 ```
 
+Create all tables with executing all sql commands from `erd-ddl.sql`
+
 Import the `sampledata_clean.csv` in your database as the table `import_data` (use something like a db browser or tool)
 
 Change to the script directory and make `import_data.py` executable and run it
