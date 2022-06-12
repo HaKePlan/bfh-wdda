@@ -45,7 +45,13 @@ def get_announcement_by_city_name(con: sqlite3.Connection, name: str) -> List[Tu
     List[Tuple]
         a list of tuples for found entries
     """
-    sql = "SELECT homeType, price, description FROM view_California_real_estate WHERE city LIKE ?;"
+    sql = """SELECT home_type_name, price, description
+    FROM Sale_Announcement
+    INNER JOIN Home_Type HT on HT.id = Sale_Announcement.home_type_id
+    INNER JOIN House H on H.id = Sale_Announcement.house_id
+    INNER JOIN County_to_City CtC on CtC.id = H.county_to_city_id
+    INNER JOIN City C on C.id = CtC.city_id
+    WHERE city_name like ?;"""
     _args = (name,)
 
     # make use of parametrized sql statements to avoid sql injection risks and improve performance

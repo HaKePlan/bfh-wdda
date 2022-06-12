@@ -70,18 +70,30 @@ SELECT city_name, count as imos_in_num_county
 
 
 -- Frage 4:
-select round(avg(price), 2) as avg_price, city
-    from view_California_real_estate
-    group by city
+select round(avg(price), 2) as avg_price, city_name
+    from Sale_Announcement
+    inner join House H on H.id = Sale_Announcement.house_id
+    inner join County_to_City CtC on CtC.id = H.county_to_city_id
+    inner join City C on C.id = CtC.city_id
+    group by city_name
     order by avg_price desc;
 
 
 -- Frage 5:
-SELECT city, ROUND(AVG(pricePerSquareFoot), 2) as Average_per_SquareFoot
-    FROM view_California_real_estate
-    GROUP BY city
+SELECT city_name, ROUND(AVG(price_per_square), 2) as Average_per_SquareFoot
+    FROM Sale_Announcement
+    inner join House H on H.id = Sale_Announcement.house_id
+    inner join County_to_City CtC on CtC.id = H.county_to_city_id
+    inner join City C on C.id = CtC.city_id
+    GROUP BY city_name
     ORDER BY Average_per_SquareFoot DESC;
 
 
 -- Frage 6:
-SELECT homeType, price, description FROM view_California_real_estate WHERE city = 'Parlier'
+SELECT home_type_name, price, description
+    FROM Sale_Announcement
+    INNER JOIN Home_Type HT on HT.id = Sale_Announcement.home_type_id
+    INNER JOIN House H on H.id = Sale_Announcement.house_id
+    INNER JOIN County_to_City CtC on CtC.id = H.county_to_city_id
+    INNER JOIN City C on C.id = CtC.city_id
+    WHERE city_name like 'Parlier'
