@@ -11,6 +11,7 @@ Project group members:
   * `erd-ddl.sql`: sql commands for initializing the database and its model
   * `sampledata_clean.csv`: the dataset which we have to process and use for this project cleaned from `N/A`
   * `main.py`: flask server file
+  * `erd_diagram.mdj`: erd diagram (staruml)
 * scripts: scripts with the needed code to solve all mandatory tasks
   * `import_data.py`: python code for importing the data to the corresponding tables
   * `exercise_a.sql`: sql commands for task A
