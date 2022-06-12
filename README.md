@@ -1,6 +1,8 @@
 # WDDA Students project
 
-This repository is for a students project
+This [repository](https://github.com/HaKePlan/bfh-wdda) is for a students project
+
+Project group members:
 
 ## Repository content
 * root: organising files and flask server
@@ -41,6 +43,8 @@ $ python ./import_data.py
 
 Run the sql commands from `exercise_a.sql` in your favorite sql browser or simply use the command line shell for sqlite
 
+Screencast (only for BFH members): https://bernerfachhochschule-my.sharepoint.com/:v:/g/personal/claus1_bfh_ch/EXD9pS1ZDz1KqvRlJvK86t4B_j9x9M4FCdZ5PsYx6_XVEw?e=fJPPLS
+
 ## Task B
 Go in the `scripts` directory and make the script `exercise_b.py` executable
 ```bash
@@ -68,6 +72,8 @@ $ flask run
 Open your browser on `http://127.0.0.1:5000`
 
 From there on, the web page will show you how to use it ;)
+
+Screencast (only for BFH members): https://bernerfachhochschule-my.sharepoint.com/:v:/g/personal/claus1_bfh_ch/Ef0naIz6TwxEvpluKWba3H8BU-7U63rcaabjXt4RIjTkMg?e=mdACtn
 
 ## Task C
 
