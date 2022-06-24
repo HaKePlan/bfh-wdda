@@ -19,7 +19,7 @@ result <- dbGetQuery(con, 'select
     bathroom
 from Sale_Announcement
     inner join House H on H.id = Sale_Announcement.house_id
-where bedroom > 0 or bathroom > 0')
+where bedroom > 0 or bathroom > 0;')
 
 # attach and show overview for all variables
 attach(result)
@@ -85,3 +85,20 @@ plot(model_1$residuals~bathroom)
 
 
 # Model 2)
+# run the python script 'exercise_c_data_import.py' to import the data needed for model 2
+library(reticulate)
+use_virtualenv('../venv')
+py_run_file('./exercise_c_data_import.py')
+
+# get the data for the second model from the data base. Now we should have voters as a variable available
+result2 <- dbGetQuery(con, 'select
+    price / 1000 as price,
+    bedroom,
+    bathroom,
+    total_registered as voters
+from Sale_Announcement
+    inner join House H on H.id = Sale_Announcement.house_id
+    inner join County_to_City CtC on CtC.id = H.county_to_city_id
+    inner join County C on C.id = CtC.county_id
+    inner join Voter V on C.id = V.county_id
+where bedroom > 0 or bathroom > 0;')
