@@ -124,8 +124,6 @@ if __name__ == '__main__':
         # write data from csv file to db
         write_voter(voter_data, connection)
 
-        exit(0)
-
     else:
         raise Exception('Connection to project_data.sqlite is not established. Please check if db is in right path.')
 
