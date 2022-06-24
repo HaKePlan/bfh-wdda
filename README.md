@@ -77,4 +77,29 @@ From there on, the web page will show you how to use it ;)
 Screencast (only for BFH members): https://bernerfachhochschule-my.sharepoint.com/:v:/g/personal/claus1_bfh_ch/Ef0naIz6TwxEvpluKWba3H8BU-7U63rcaabjXt4RIjTkMg?e=mdACtn
 
 ## Task C
+### Preparation
+Run following commands to create the database with all its data needed for task c
+```bash
+$ python3 -m venv ./venv
+$ source ./venv/bin/activate
+$ touch project_data.sqlite
+$ cd scripts
+$ chmod 755 import_data.py
+$ python ./import_data.py
+```
+
+### Model 1
+...
+
+### Model 2
+Model 2 uses data from the secretary of state's office of california.  
+The used dataset is the voter registration statistics from June 7, 2022, Primary Election '15 Day Report of Registration'  
+*source:* https://www.sos.ca.gov/elections/report-registration/15day-primary-2022
+
+Run following commands before going to Model 2 or use the command in the R script to set up the Voter table:
+```bash
+$ cd scripts
+$ chmod 755 exercise_c_data_import.py
+$ python ./exercise_c_data_import.py
+```
 
