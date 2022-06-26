@@ -37,6 +37,8 @@ Create all tables with executing all sql commands from `erd-ddl.sql`
 
 Import the `sampledata_clean.csv` in your database as the table `import_data` (use something like a db browser or tool)
 
+<div style="page-break-after: always;"></div>
+
 Change to the script directory and make `import_data.py` executable and run it
 ```bash
 $ cd scripts
@@ -77,6 +79,8 @@ Open your browser on `http://127.0.0.1:5000`
 From there on, the web page will show you how to use it ;)
 
 Screencast (only for BFH members): https://bernerfachhochschule-my.sharepoint.com/:v:/g/personal/claus1_bfh_ch/Ef0naIz6TwxEvpluKWba3H8BU-7U63rcaabjXt4RIjTkMg?e=mdACtn
+
+<div style="page-break-after: always;"></div>
 
 ## Task C
 ### Preparation
