@@ -13,7 +13,8 @@ con <- dbConnect(RSQLite::SQLite(), "../project_data.sqlite")
 
 # Model 1)
 # run sql query to fetch needed data
-# exclude observations, which have 0 bathrooms and 0 bedrooms, since these observations won't help us for our explanation
+# exclude observations, which have 0 bathrooms and 0 bedrooms, since these observations won't help us for our explanation.
+# Also, observations with 0 bath- and 0 bedrooms are more storage rooms than hoses and therefore not comparable with houses.
 # Price is displayed in thousands.
 result <- dbGetQuery(con, 'select
     price / 1000 as price,
@@ -75,6 +76,7 @@ plot(model_1$residuals~bathroom)
 # residuals vs. bedroom: variation seems very high between 7 and 12 bedrooms
 # residuals vs. bathroom: variation seems to grow with number of bathrooms.
 # While the underestimation seems to grow linear, the over estimation has no clear pattern
+# Also, to mention is, that the residuals to bathroom seem not to be randomly distributed
 
 # Summary Model 1:
 # Our analysis shows, that the model is not good enough.
@@ -143,3 +145,62 @@ plot(model_2$residuals ~ voters)
 
 # Summary model 2:
 # We could improve the model, but not by a significant value. It is still unsatisfying.
+
+
+# Model 2.1)
+# We try to improve our model with the area (lining_area) variable.
+# We only include values betwen 1 and 100000. With this range, we can exclude datasets which contain unrealistic data.
+# Since we do not understand what the unit should be, we assume it is sqarfoot which is the most common measurement unit
+# for house areas in the us
+result3 <- dbGetQuery(con, 'select
+    price / 1000 as price,
+    bedroom,
+    bathroom,
+    total_registered as voters,
+    living_area as area
+from Sale_Announcement
+    inner join House H on H.id = Sale_Announcement.house_id
+    inner join County_to_City CtC on CtC.id = H.county_to_city_id
+    inner join County C on C.id = CtC.county_id
+    inner join Voter V on C.id = V.county_id
+    inner join Building_Area BA on BA.id = H.building_area_id
+where (bedroom > 0 or bathroom > 0) and (area > 1 and area < 100000);')
+
+detach(result2)
+attach(result3)
+
+plot(price~area)
+abline(lm(price~area, data = result3))
+
+summary(lm(price~area, data = result3))
+
+cor(result3)
+# While looking at the correlation in our dataset, we can see,
+# that we have a visible relation between the price and the area.
+# Also, the relation from the area to bath- and bedroom seems to be the highest recorder over all models.
+
+model_3 <- lm(price ~ bedroom + bathroom + voters + area, data = result3)
+coef(model_3)
+# Formula for Price prediction:
+# -5.46 $ + 3.543 $/bathroom * bathroom + -3.452 $/bedroom * bedroom + 5.413 $/voter * voter + 9.029 $/area * area
+# The prediction formula begins to make sense
+
+summary(model_3)
+# While looking at the Adjusted R-squared, we can see, that the area variable could improve the model significant.
+# Now we can explain the prices to 43.95%
+# Also, the standard deviation is now smaller: ± 2 * 1821
+
+hist(model_3$residuals)
+# The residuals have now at least kind of bell pattern
+
+plot(model_3$residuals~bathroom)
+plot(model_3$residuals~bedroom)
+plot(model_3$residuals~voters)
+plot(model_3$residuals~area)
+# Now the residuals to bathroom look more randomly distributed
+
+# Summary model_3:
+# It looks like we could improve the model clearly.
+# Now some indicators like the bell pattern over the residuals and the randomly distribution is archived.
+# Furthermore, is now the adjusted R-squared in a more meaningful range.
+# The prediction formula predicts no more negative prices.
